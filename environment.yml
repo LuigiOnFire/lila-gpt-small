@@ -1,0 +1,13 @@
+name: lila-gpt-small
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - tensorflow>=2.15
+      - pandas
+      - numpy
+      - requests
+      - rdflib
