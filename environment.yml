@@ -4,10 +4,10 @@ channels:
   - conda-forge
 dependencies:
   - python=3.10
+  - tensorflow>=2.10
+  - rdflib>=6.0
+  - numpy>=1.23
+  - scikit-learn
+  - tqdm
+  - jupyterlab 
   - pip
-  - pip:
-      - tensorflow>=2.15
-      - pandas
-      - numpy
-      - requests
-      - rdflib
