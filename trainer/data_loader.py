@@ -18,7 +18,7 @@ class RDFDataFetcher:
             return["results"]["bindings"]
         except Exception as e:
             logging.error(f"SPARQL query failed: {e}")
-            logging.error(f"Query: {current_query)"
+            logging.error(f"Query: {current_query}")
             return []
 
     def fetch_works_and_texts(self, limit=None, offset=None):

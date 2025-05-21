@@ -6,7 +6,6 @@ def main():
     # Setup basic logging for the main script itself
     # The training module will reconfigure it more formally if needed
     logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
-
     try:
         training.run_training()
     except Exception as e:

@@ -1,7 +1,7 @@
 # trainer/training.py
 import tensorflow as tf
 import logging
-from trainer import config, model as model_builder, dataloader, preprocessing, utils
+from trainer import config, model as model_builder, data_loader, preprocessing, utils
 
 def run_training():
     utils.setup_logging()
@@ -19,7 +19,7 @@ def run_training():
     # this fetching coudl be integrated into a tf.data.Dataset.from_generator.
     # Here, we fetch once and then process.
     # You can adjust the limit in config.py
-    fetched_douments = rdf_fetcher.fetch_works_and_texts(limit=config.SPARQL_QUERY_WORKS_AND_TEXTS.split("LIMIT")[-1].split()[0] if "LIMIT" in config.SPARQL_QUERY_WORKS_AND_TEXTS else 1000)
+    fetched_documents = rdf_fetcher.fetch_works_and_texts(limit=config.SPARQL_QUERY_WORKS_AND_TEXTS.split("LIMIT")[-1].split()[0] if "LIMIT" in config.SPARQL_QUERY_WORKS_AND_TEXTS else 1000)
 
     if not fetched_documents:
         logging.error("No documents fetched. Aborting training.")

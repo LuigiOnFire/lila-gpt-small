@@ -34,5 +34,9 @@ EPOCHS = 5
 LEARNING_RATE = 1e-4
 BUFFER_SIZE_SHUFFLE = 1000 # 
 
+# Logging and Reproducibility
+LOG_FILE = "training.log"
+RANDOM_SEED = 42
+
 # Path for tokenizer persistence
 TOKENIZER_PATH = "tokenizer.json"

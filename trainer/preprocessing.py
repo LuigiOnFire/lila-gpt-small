@@ -4,19 +4,19 @@ import numpy as np
 import logging
 import json
 from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.preprocessing.sequence import pas_sequences
-from rdf_transformer_trainer import config
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from trainer import config
 
 class TextPreprocessor:
     def __init__(self, vocab_size=config.VOCAB_SIZE, max_seq_len=config.MAX_SEQ_LEN):
-        self.tokenizer = Tokenizer(num_words==vocab_size, oov_token="<unk>")
+        self.tokenizer = Tokenizer(num_words=vocab_size, oov_token="<unk>")
         self.vocab_size = vocab_size
         self.max_seq_len = max_seq_len
         self.fitted = False
 
     def fit_on_texts(self, texts_list):
         """Fits the tokenizer on a list of texts."""
-        logging.info(f"Fitting tokenizer on {len(texts_lists)} texts...")
+        logging.info(f"Fitting tokenizer on {len(texts_list)} texts...")
         self.tokenizer.fit_on_texts(texts_list)
         self.fitted = True
         # Vocab size actual: self.tokenizer.num_words or len(self.tokenizer.word_index) + 1
@@ -31,7 +31,7 @@ class TextPreprocessor:
         if not self.fitted:
             raise ValueError("Tokenizer has not been fitted yet.")
         with open(path, 'w') as f:
-            json.jump(self.tokenizer.to_json(), f)
+            json.dump(self.tokenizer.to_json(), f)
         logging.info(f"Tokenizer saved to {path}")
 
     def load_tokenizer(self, path):
@@ -75,6 +75,7 @@ class TextPreprocessor:
             for i in range(1, len(token_list)):
                 n_gram_sequence = token_list[:i+1]
                 input_seq_partial = n_gram_sequence[:-1]
+                output_seq_partial = n_gram_sequence[-1]
 
                 # Ensure input is not empty
                 if not input_seq_partial:
@@ -91,7 +92,7 @@ class TextPreprocessor:
                 # Output is a single token, but we will one-hot encode later, so shape issues are tricky
                 # For now let's assume this means an empty batch will be produced.
                 return tf.data.Dataset.from_tensor_slices(
-                        (tf,zeros((0, self.max_seq_len -1 ), dtype=tf.int32),
+                        (tf.zeros((0, self.max_seq_len -1 ), dtype=tf.int32),
                             tf.zeros((0,), dtype=tf.int32)) # Output is single token ID
                 )
 
@@ -102,48 +103,56 @@ class TextPreprocessor:
                                                     truncating='pre')
            
             # Convert output to numpy array
-            output_tokens = np.array(output_sequqnces)
+            output_tokens = np.array(output_sequences)
 
-            dataset = tf.data.Dataset.from_tensor_slices((padded_input_sequqnces, output_tokens))
+            dataset = tf.data.Dataset.from_tensor_slices((padded_input_sequences, output_tokens))
             return dataset
 
-        def get_tf_dataset(self, rdf_texts_data, batch_size=config.BATCH_SIZE, shuffle=True)
-        """
-        Creates a complete tf.data pipeline from RDF fetched data.
-        rdf_texts_data: list of dictionaries [{'work_uri': ..., 'text_content': ...}, ...]
-        """
-        all_texts = [item['text_content'] for item in rdf_texts_data]
-        if not all_texts:
-            logging.error("No texts provided to create dataset.")
-            # Return an empty dataset to avoid crashing
-            return tf.data.Dataset.from_tensor_slices(
-                    (tf.zeros((0, self.max_seq_len -1 ), dtype=tf.int32),
-                    tf.zeros((0,), dtype=tf.int32))
-            ).batch(batch_size)
+        def get_tf_dataset(self, rdf_texts_data, batch_size=config.BATCH_SIZE, shuffle=True):
+            """
+            Creates a complete tf.data pipeline from RDF fetched data.
+            rdf_texts_data: list of dictionaries [{'work_uri': ..., 'text_content': ...}, ...]
+            """
+            all_texts = [item['text_content'] for item in rdf_texts_data]
+            if not all_texts:
+                logging.error("No texts provided to create dataset.")
+                # Return an empty dataset to avoid crashing
+                return tf.data.Dataset.from_tensor_slices(
+                        (tf.zeros((0, self.max_seq_len -1 ), dtype=tf.int32),
+                        tf.zeros((0,), dtype=tf.int32))
+                ).batch(batch_size)
 
 
-        # Fit tokenizer on all available textss if not already fitted
-        # For very large datasets, consider fitting on a representative sample
-        # or loading a pre-trained tokenizer.
-        if not self.fitted:
-            self.fit_on_texts(all_texts)
+            # Fit tokenizer on all available textss if not already fitted
+            # For very large datasets, consider fitting on a representative sample
+            # or loading a pre-trained tokenizer.
+            if not self.fitted:
+                self.fit_on_texts(all_texts)
+            # This processes all texts into one large dataset.
+            # For very large dynamic data, you'd use tf.data.Dataset.from_generator
+            # with the data_loader yielding texts one by one.
+            # Here, we simplify by processing the initial batch of texts from RDF.
+                                        
+            dataset = self.create_lm_dataset_from_texts(all_texts)
 
-        dataset = dataset.batch(batch_size)
-        dataset = dataset.prefetch(tf.data.AUTOTUNE)
+            if shuffle:
+                dataset = dataset.shuffle(buffer_size=config.BUFFER_SIZE_SHUFFLE)
+            dataset = dataset.batch(batch_size)
+            dataset = dataset.prefetch(tf.data.AUTOTUNE)
 
-        logging.info("TensorFlow dataset created.")
-        return dataset
+            logging.info("TensorFlow dataset created.")
+            return dataset
 
 # Example Usage (typically integrated into the training script)
 if __name__ == '__main__':
-    logging.basicConfig(level-logging.INFO)
+    logging.basicConfig(level=logging.INFO)
     sample_texts = [
         "This is the first sentence for training.",
         "Another sentence follows.",
         "And a third one to make the vocabulary larger."
     ]
     # Simmulated fetched data
-    simulated_rdf_data[{"work_uri": f"ex:doc{i}", "text_ontent": text} for i, text in enumerate(sample_texts)]
+    simulated_rdf_data = [{"work_uri": f"ex:doc{i}", "text_content": text} for i, text in enumerate(sample_texts)]
 
     preprocessor = TextPreprocessor(vocab_size=50, max_seq_len=10)
 
