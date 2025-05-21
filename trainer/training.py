@@ -1,7 +1,7 @@
 # trainer/training.py
 import tensorflow as tf
 import logging
-from training import config, model as model_builder, dataloader, preprocessing, utils
+from trainer import config, model as model_builder, dataloader, preprocessing, utils
 
 def run_training():
     utils.setup_logging()

@@ -1,7 +1,7 @@
 # rdf_transformer_trainer/model.py
 import tensorflow as tf
 from tensorflow.keras import layers
-from rdf_transformer_trainer import config
+from trainer import config
 import numpy as np
 import logging
 

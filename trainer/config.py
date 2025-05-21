@@ -22,9 +22,10 @@ MIN_SENTENCE_LEN = 5 # Min number of words for word to be considered sentence
 
 # Transformer Model Parameters
 EMBEDDING_DIM = 256       # Dimension of token embeddings
-NUM_TRANFORMER_BLOCKS = 4 # Number of blocks in the transformer
+NUM_TRANSFORMER_BLOCKS = 4 # Number of blocks in the transformer
 NUM_HEADS = 8             # Number of attention heads
 FF_DIM = 512              # Hidden layer size in ff layers in transformer
+DROPOUT_RATE = 0.1
 
 # Training Parameters
 # All are subject to further tuning

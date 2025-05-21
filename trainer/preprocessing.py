@@ -156,7 +156,7 @@ if __name__ == '__main__':
         logging.info(f"Input Batch Shape: {input_batch.shape}") # (batch_size, max_seq_len-1)
         logging.info(f"Target Batch Shape: {target_batch.shape}") # (batch_size, max_seq_len-1)
         logging.info(f"Input Batch Example: \n{input_batch[0].numpy()}")
-        logging.info(f"Target Bath Example: \n{target_batch[0].numpy()})
+        logging.info(f"Target Bath Example: \n{target_batch[0].numpy()}")
         # To convert back to words (for inspection):
         # reverse_word_map = dict(map(reversed, preprocessor.tokenizer.word_index.items()))
         # input_sentence = [reverse_word_map.get(i) for i in input_batch[0].numpy() if i != 0]
