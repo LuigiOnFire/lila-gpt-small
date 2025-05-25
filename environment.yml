@@ -6,9 +6,11 @@ dependencies:
   - python=3.10
   - tensorflow>=2.10
   - rdflib>=6.0
-  - numpy>=1.23
+  - numpy>=2.0.0
   - scikit-learn
   - tqdm
   - jupyterlab 
+  - protobuf=5.29.3
   - pip
-  - sparqlwrapper
+  - pip:
+    - sparqlwrapper

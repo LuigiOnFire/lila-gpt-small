@@ -1,19 +1,40 @@
 # trainer/config.py
 
 # SPARQL Configuration
-SPARQL_ENDPOINT = "https://dbpedia.org/sparql" # Will be modified later for lila graph
+SPARQL_ENDPOINT = "https://lila-erc.eu/sparql/lila_knowledge_base/sparql"
 # Query to fetch works
 SPARQL_QUERY_WORKS_AND_TEXTS = """
-PREFIX dbo: <http://dbpedia.org/ontology/>
-PREFIX rfds: <http://www.w3.org/TR/REC-rdf-schema/#>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX powla: <http://purl.org/powla/powla.owl#>
 
-SELECT DISTINCT ?work ?text WHERE {
-  ?work a dbo:EducationalInstitution ;
-        dbo:abstract ?text .
-}
-LIMIT 200 # Adjust as needed
-OFFSET 0  # For potential pagination
+# get all documents in LiLa
+SELECT * WHERE {
+          ?libbro rdf:type  powla:Document.
+            ?libbro dc:title ?title.
+            } LIMIT 10
 """
+
+SPARQL_QUERY_TEXTS = """
+PREFIX co: <http://purl.org/ontology/co/core#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+prefix lila: <http://lila-erc.eu/ontologies/lila/>
+prefix powla: <http://purl.org/powla/powla.owl#>
+prefix corpora: <https://lila-erc.eu/ontologies/lila_corpora/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+ 
+ SELECT ?label
+ WHERE {
+           BIND(<http://lila-erc.eu/data/corpora/Lasla/id/corpus/SenecaAd%20Lucilium%20Epistulae%20Morales> AS ?documentURI)
+             
+                
+             ?sentenceLayer powla:hasDocument  ?documentURI.
+               ?word powla:hasLayer ?sentenceLayer.
+                 ?word  rdfs:label  ?label
+                   
+                 } limit 50
+ """
 
 # Data Loading and Preprocessing
 VOCAB_SIZE = 10000   # For tokenizer

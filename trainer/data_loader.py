@@ -13,9 +13,12 @@ class RDFDataFetcher:
 
     def _execute_query(self, current_query):
         self.sparql.setQuery(current_query)
+        print(current_query)
         try:
+            prior_results = self.sparql.query()
+            print(prior_results)
             results = self.sparql.query().convert()
-            return["results"]["bindings"]
+            return results["results"]["bindings"]
         except Exception as e:
             logging.error(f"SPARQL query failed: {e}")
             logging.error(f"Query: {current_query}")
@@ -38,8 +41,14 @@ class RDFDataFetcher:
 
         logging.info(f"Fetching data with query\n{query_to_execute}")
 
+        bindings = self._execute_query(query_to_execute)
+
         processed_results = []
         if not bindings:
+            logging.warning("No results return for SPARQL query.")
+            return processed_results
+
+        for res in bindings:
             work_uri = res.get("work", {}).get("value")
             text_content = res.get("text", {}).get("value") # Assumes 'text' variable in SPARQL query
             
