@@ -9,46 +9,44 @@ def run_training():
 
     logging.info("Starting training process...")
 
-    # 1. Load data from RDF source
-    logging.info("Fetching data from RDF store...")
-    rdf_fetcher = data_loader.RDFDataFetcher(
-        sparql_endpoint=config.SPARQL_ENDPOINT,
-        query=config.SPARQL_QUERY_WORKS_AND_TEXTS
-    )
-    # Fetch an initial set of documents. For a truly dynamic system
-    # this fetching coudl be integrated into a tf.data.Dataset.from_generator.
-    # Here, we fetch once and then process.
-    # You can adjust the limit in config.py
-    fetched_documents = rdf_fetcher.fetch_works_and_texts(limit=config.SPARQL_QUERY_WORKS_AND_TEXTS.split("LIMIT")[-1].split()[0] if "LIMIT" in config.SPARQL_QUERY_WORKS_AND_TEXTS else 1000)
+    # Here we SHOULD look for the file, or parse an argument to remake it, but I'm putting a placeholder here for now
+    if True:
+        # 1. Load data from RDF source
+        logging.info("Fetching data from RDF store...")
+        rdf_fetcher = data_loader.RDFDataFetcher(
+            sparql_endpoint=config.SPARQL_ENDPOINT,
+            query=config.SPARQL_QUERY_WORKS_AND_TEXTS
+        )
+        # Fetch the dictionary of documents and sizes
+        document_dictionary = rdf_fetcher.list_available_works_with_lengths(limit=config.SPARQL_QUERY_WORKS_AND_TEXTS.split("LIMIT")[-1].split()[0] if "LIMIT" in config.SPARQL_QUERY_WORKS_AND_TEXTS else 1000)
 
-    if not fetched_documents:
+    else:
+        # load document dictionary from some file
+        document_dictionary = []
+
+    if not document_dictionary:
         logging.error("No documents fetched. Aborting training.")
         return
 
     # 2. Preprocess Data
     logging.info("Initializing preprocessor...")
-    text_preprocessor = preprocessing.TextPreprocessor(
-        vocab_size=config.VOCAB_SIZE,
-        max_seq_len=config.MAX_SEQ_LEN
-    )
+    # Removed maximum vocab size here: now we're doing simple word-based tokenization
+    text_preprocessor = preprocessing.TextPreprocessor(max_seq_len=config.MAX_SEQ_LEN)
 
-    # Create TensorFlow dataset. This will also fit the tokenizer on the fetched_documents.
-    # Note: For very large datasets, fit tokenizer on a sample or load pre-trained.
-    train_dataset = text_preprocessor.get_tf_dataset(
-        fetched_documents,
+    # 
+    token_list = text_preprocessor.get_tf_dataset(
+        document_dictionary,
         batch_size=config.BATCH_SIZE
     )
 
+    # THIS ENTIRE SECTION WILL NEED TO BURN SOONER OR LATER
+    # I'll need to make a new function that tokenizes as we read one at a time
     # Get the actual vocabulary size after fitting the tokenizer
     # The Tokenizer's num_words is the max size. word_index gives the actual items.
     actual_vocab_size = len(text_preprocessor.tokenizer.word_index) + 1 # +1 for padding/OOV
     if actual_vocab_size == 1 and config.VOCAB_SIZE > 1 : # maybe only <unk> token
         logging.error("Tokenizer fitting resulted in a very small vocabulary (size {actual_vocabulary}. Check data and MIN_SENTENCE_LEN.")
         logging.error("This usually happens if no valid sequences are generated. Check MIN_SENTENCE_LEN and input text content.")
-        # Check if dataset is empty 
-        if tf.data.experimental.cardinality(train_dataset).numpy() == 0:
-            logging.error("The training dataset is empty. Aborting training.")
-            return 
         # If config.VOCAB_SIZE was small (e.g. 1), this might be okay.
         # But generally, if it's unexpectedly 1 or 2, it's an issue.
         if actual_vocab_size < 10 and config.VOCAB_SIZE > 100: # Heuristic for problem
@@ -95,12 +93,12 @@ def run_training():
     # you might need to specify `steps_per_epoch`.
     # For a dataset made from a fixed list of texts, Keras can usually infer this.
     try:
-        history = transformer_model.fit(
-            train_dataset,
-            epochs=config.EPOCHS,
-            callbacks=callbacks
+        # history = transformer_model.fit(
+        #     train_dataset,
+        #     epochs=config.EPOCHS,
+        #     callbacks=callbacks
             # validation_data=validation_dataset, # If you have a validation set
-        )
+        # )
         logging.info(f"Training completed.")
         logging.info(f"Training history: {history.history}")
 

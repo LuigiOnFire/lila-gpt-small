@@ -4,9 +4,10 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 from trainer import config
 
 class RDFDataFetcher:
-    def __init__(self, sparql_endpoint, query):
+    def __init__(self, sparql_endpoint, work_list_query, work_length_query):
         self.sparql_endpoint = sparql_endpoint
-        self.query = query
+        self.work_list_query = work_list_query
+        self.work_length_query = work_length_query
         self.sparql = SPARQLWrapper(self.sparql_endpoint)
         self.sparql.setReturnFormat(JSON)
         self.sparql.setTimeout(60)
@@ -24,13 +25,13 @@ class RDFDataFetcher:
             logging.error(f"Query: {current_query}")
             return []
 
-    def fetch_works_and_texts(self, limit=None, offset=None):
+    def fetch_work_names(self, limit=None, offset=None):
         """
         Fetches a list of works and their associated texts.
         Each item in the returned list is a dictionary, e.g.
         {'work_uri': 'https://dbpedia.org/resource/MyBook', 'text_content': 'This is an abstract.'}
         """
-        query_to_execute = self.query
+        query_to_execute = self.work_list_query
 
         # Apply limit and offset if provided and not already in the query string
         query_lower = query_to_execute.lower()
@@ -71,7 +72,7 @@ class RDFDataFetcher:
         and if it's available in the KG.
         For now, it fetches texts and calculates character length.
         """
-        items = self.fetch_works_and_texts(limit=limit)
+        items = self.fetch_work_names(limit=limit)
         works_with_lengths = []
         for item in items:
             works_with_lengths.append({

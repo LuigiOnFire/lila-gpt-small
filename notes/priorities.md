@@ -1,0 +1,3 @@
+- script to download rdf graph
+- top level logic for sampling graph *in a random but fixed order*
+- implementation of functions that randomly select work, line from index
