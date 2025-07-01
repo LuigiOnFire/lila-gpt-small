@@ -3,3 +3,5 @@
 *.swo
 *.swn
 *.pyc
+**/*.pyc
+__pycache__/

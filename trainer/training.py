@@ -91,6 +91,21 @@ def run_training():
     # Create a TensorFlow dataset from the sample IDs
     dataset = tf.data.Dataset.from_tensor_slices(all_sample_ids)
 
+    # Shuffle with a seed and reshuffle each time each epoch
+    dataset = dataset.shuffle(buffer_size=total_samples, seed=config.SEED, reshuffle_each_iteration=True)
+
+    # Use tf.py_function to map the user's loading function
+    def load_wrapper(id_pair)
+        feature, label = tf.py_function(
+            get_sample, # the function where I get stuff with my SPARQL queries
+            inp=[id_pair[0], id_pair[1]],
+            Tout=[tf.int32, tf.int32] # not confirmed yet, could cause bugs
+        )
+        feature.set_shape((config.MAX_SEQ_LEN,))  # Set the shape of the feature
+        label.set_shape((config.MAX_SEQ_LEN,))    # Set the shape of the label
+        return feature, label
+    
+
     # 5. Train Model
     logging.info(f"Starting model training for {config.EPOCHS} epochs...")
 
