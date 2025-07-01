@@ -1,0 +1,18 @@
+PREFIX co: <http://purl.org/ontology/co/core#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+prefix lila: <http://lila-erc.eu/ontologies/lila/>
+prefix powla: <http://purl.org/powla/powla.owl#>
+prefix corpora: <https://lila-erc.eu/ontologies/lila_corpora/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+ 
+SELECT ?label
+WHERE {
+  BIND(<http://lila-erc.eu/data/corpora/Lasla/id/corpus/SenecaAd%20Lucilium%20Epistulae%20Morales> AS ?documentURI)
+  
+ 	
+  ?sentenceLayer powla:hasDocument  ?documentURI.
+  ?word powla:hasLayer ?sentenceLayer.
+  ?word  rdfs:label  ?label
+  
+} limit 500

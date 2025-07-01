@@ -30,7 +30,9 @@ def run_training():
 
     # 2. Preprocess Data
     logging.info("Initializing preprocessor...")
+
     # Removed maximum vocab size here: now we're doing simple word-based tokenization
+    # Todo: Redo tokenizer for RDF graph
     text_preprocessor = preprocessing.TextPreprocessor(max_seq_len=config.MAX_SEQ_LEN)
 
     # 
@@ -39,10 +41,7 @@ def run_training():
         batch_size=config.BATCH_SIZE
     )
 
-    # THIS ENTIRE SECTION WILL NEED TO BURN SOONER OR LATER
-    # I'll need to make a new function that tokenizes as we read one at a time
-    # Get the actual vocabulary size after fitting the tokenizer
-    # The Tokenizer's num_words is the max size. word_index gives the actual items.
+
     actual_vocab_size = len(text_preprocessor.tokenizer.word_index) + 1 # +1 for padding/OOV
     if actual_vocab_size == 1 and config.VOCAB_SIZE > 1 : # maybe only <unk> token
         logging.error("Tokenizer fitting resulted in a very small vocabulary (size {actual_vocabulary}. Check data and MIN_SENTENCE_LEN.")
@@ -55,7 +54,7 @@ def run_training():
 
     # Save the fitted tokenizer for inference or retraining
     text_preprocessor.save_tokenizer(config.TOKENIZER_PATH)
-    logging.info(f"Effetive vocabulary size for model: {actual_vocab_size}")
+    logging.info(f"Effective vocabulary size for model: {actual_vocab_size}")
 
     # 3. Build Model
     logging.info("Building Transformer model...")
@@ -79,6 +78,18 @@ def run_training():
         metrics=["accuracy"]
     )
     logging.info("Model compiled.")
+
+    # 5. Prepare Dataset
+    logging.info("Preparing training dataset...")
+    # Call data_loader functions to get two values: number of works and words per work
+    num_works, words_per_work = data_loader.get_num_works_and_words_per_work()
+    all_sample_ids = [(w, s) for w in range(num_works) for s in range(words_per_work)]
+    total_samples = len(all_sample_ids)
+
+    # TODO: add params in config.py, such as save_checkpoint_every_steps, and checkpoint_dir
+
+    # Create a TensorFlow dataset from the sample IDs
+    dataset = tf.data.Dataset.from_tensor_slices(all_sample_ids)
 
     # 5. Train Model
     logging.info(f"Starting model training for {config.EPOCHS} epochs...")

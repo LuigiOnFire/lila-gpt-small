@@ -16,7 +16,7 @@ WHERE {
       ?word powla:hasLayer ?sentenceLayer.
         ?word rdfs:label ?label
         }
-        LIMIT 50
+        LIMIT 10
 """
 
 response = requests.post(

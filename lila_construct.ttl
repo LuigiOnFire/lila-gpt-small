@@ -1,0 +1,108 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ns1: <http://lila-erc.eu/data/corpora/CLaSSES/id/corpus/> .
+@prefix ns2: <http://lila-erc.eu/data/corpora/digiliblt/id/corpus/> .
+@prefix ns3: <http://lila-erc.eu/data/corpora/Lasla/id/corpus/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+[] ns1:GORDON [ a [ ],
+                [ ] ;
+            dc:contributor [ ] ;
+            dc:description [ ] ;
+            dc:title [ ] ;
+            rdfs:comment [ ] ] ;
+    ns3:OvidiusAmores [ a [ ] ;
+            dc:title [ ] ;
+            dcterms:creator [ ] ] ;
+    ns3:PlautusAmphitruo [ a [ ] ;
+            dc:title [ ] ;
+            dcterms:creator [ ] ] ;
+    ns3:SenecaAd%20Helviam%20Matrem%20De%20Consolatione [ a [ ] ;
+            dc:title [ ] ;
+            dcterms:creator [ ] ] ;
+    ns3:SenecaAd%20Lucilium%20Epistulae%20Morales [ a [ ] ;
+            dc:title [ ] ;
+            dcterms:creator [ ] ] ;
+    ns3:SenecaAd%20Marciam%20De%20Consolatione [ a [ ] ;
+            dc:title [ ] ;
+            dcterms:creator [ ] ] ;
+    ns3:SenecaAd%20Polybium%20De%20Consolatione [ a [ ] ;
+            dc:title [ ] ;
+            dcterms:creator [ ] ] ;
+    ns3:SenecaAgamemnon [ a [ ] ;
+            dc:title [ ] ;
+            dcterms:creator [ ] ] ;
+    ns3:SenecaApocolocyntosis [ a [ ] ;
+            dc:title [ ] ;
+            dcterms:creator [ ] ] ;
+    ns3:VergiliusAeneis [ a [ ] ;
+            dc:title [ ] ;
+            dcterms:creator [ ] ] ;
+    ns2:dlt000005 [ a [ ] ;
+            dc:contributor [ ] ;
+            dc:description [ ] ;
+            dc:title [ ] ;
+            dcterms:creator [ ] ;
+            rdfs:seeAlso [ ] ] ;
+    ns2:dlt000013 [ a [ ] ;
+            dc:contributor [ ] ;
+            dc:description [ ] ;
+            dc:title [ ] ;
+            dcterms:creator [ ] ;
+            rdfs:seeAlso [ ] ] ;
+    ns2:dlt000038 [ a [ ] ;
+            dc:contributor [ ] ;
+            dc:description [ ] ;
+            dc:title [ ] ;
+            dcterms:creator [ ] ;
+            rdfs:seeAlso [ ] ] ;
+    ns2:dlt000039 [ a [ ] ;
+            dc:contributor [ ] ;
+            dc:description [ ] ;
+            dc:title [ ] ;
+            dcterms:creator [ ] ;
+            rdfs:seeAlso [ ] ] ;
+    ns2:dlt000075 [ a [ ] ;
+            dc:contributor [ ] ;
+            dc:description [ ] ;
+            dc:title [ ] ;
+            dcterms:creator [ ] ;
+            rdfs:seeAlso [ ] ] ;
+    ns2:dlt000166 [ a [ ] ;
+            dc:contributor [ ] ;
+            dc:description [ ] ;
+            dc:title [ ] ;
+            dcterms:creator [ ] ;
+            rdfs:seeAlso [ ] ] ;
+    ns2:dlt000246 [ a [ ] ;
+            dc:contributor [ ] ;
+            dc:description [ ] ;
+            dc:title [ ] ;
+            dcterms:creator [ ] ;
+            rdfs:seeAlso [ ] ] ;
+    ns2:dlt000453 [ a [ ] ;
+            dc:contributor [ ] ;
+            dc:description [ ] ;
+            dc:title [ ] ;
+            rdfs:comment [ ] ;
+            rdfs:seeAlso [ ] ] ;
+    ns2:dlt000454 [ a [ ] ;
+            dc:contributor [ ] ;
+            dc:description [ ] ;
+            dc:title [ ] ;
+            rdfs:comment [ ] ;
+            rdfs:seeAlso [ ] ] ;
+    ns2:dlt000490 [ a [ ] ;
+            dc:contributor [ ] ;
+            dc:description [ ] ;
+            dc:title [ ] ;
+            dcterms:creator [ ] ;
+            rdfs:seeAlso [ ] ] ;
+    ns2:dlt000547 [ a [ ] ;
+            dc:contributor [ ] ;
+            dc:description [ ] ;
+            dc:title [ ] ;
+            dcterms:creator [ ] ;
+            rdfs:seeAlso [ ] ] ;
+    ns2:dlt000611 [ dc:contributor [ ] ] .
+
